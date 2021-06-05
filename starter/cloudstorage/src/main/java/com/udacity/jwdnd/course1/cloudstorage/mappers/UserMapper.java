@@ -15,7 +15,7 @@ public interface UserMapper {
     Integer insert(User user);
 
 
-    @Select("SELECT * FROM USERS WHERE username = #{username)")
+    @Select("SELECT * FROM USERS WHERE username = #{username}")
     User getUser(String username);
 
 
