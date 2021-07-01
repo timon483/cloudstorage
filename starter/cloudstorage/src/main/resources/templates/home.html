@@ -41,8 +41,8 @@
                             </div>
                         </form>
                         <h1 th:each ="file : ${files}" th:text="${file.filename}"></h1>
-                        <div class="alert alert-danger" th:if="${signupSuccess}">
-                            <span th:text="${signupError}">The file with this name already exists!</span>
+                        <div class="alert alert-danger" th:if="${fileSuccess}">
+                            <span th:text="${fileError}">The file with this name already exists!</span>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped" id="fileTable">
@@ -55,8 +55,8 @@
                                 <tbody>
                                 <tr th:each ="file : ${files}">
                                     <td>
-                                        <a target="_blank"  th:href="@{/home/{filename}(filename = ${file.filename})}" class="btn btn-success" th:action="@{home/file.filename}" method="GET">View</a>
-                                        <a th:href="@{/home/{filename}(filename = ${file.filename})}" class="btn btn-danger" th:action="POST">Delete</a>
+                                        <a th:href="@{/fileview/(fileId = ${file.fileId})}" class="btn btn-success">View</a>
+                                        <a  class="btn btn-danger" th:href="@{/deletefile/(fileId = ${file.fileId})}">Delete</a>
                                     </td>
                                     <th scope="row" th:text="${file.filename}">ExampleFile.txt</th>
                                 </tr>

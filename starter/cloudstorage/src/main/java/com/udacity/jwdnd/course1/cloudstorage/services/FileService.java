@@ -27,15 +27,23 @@ public class FileService {
         return this.filesMapper.getAllFiles();
     }
 
-    public boolean isFilesNameAvailable(String filename){
-        return filesMapper.getFile(filename) == null;
+    public File getFile(Integer fileId){ return filesMapper.getFile(fileId);};
+
+    public byte[] getFilesData(Integer fileId){
+        return filesMapper.getFile(fileId).getFiledata();
     }
 
-    public int createFile(MultipartFile file, User user, Authentication authentication) throws IOException {
+    public List<File> getUsersFiles(String username) { return this.filesMapper.getUsersFiles(username);}
+
+    public boolean isFilesNameAvailable(String filename, String username){
+        return filesMapper.getFileByNameAndUser(filename, username) == null;
+    }
+
+    public int createFile(MultipartFile file, Authentication authentication) throws IOException {
 
         System.out.println("File created");
 
-        return filesMapper.insert(new File(null, file.getOriginalFilename(), file.getContentType(), Long.toString(file.getSize()), user.getUserid(), file.getBytes()));
+        return filesMapper.insert(new File(null, file.getOriginalFilename(), file.getContentType(), String.valueOf(file.getSize()), authentication.getName(), file.getBytes()));
 
 
     }

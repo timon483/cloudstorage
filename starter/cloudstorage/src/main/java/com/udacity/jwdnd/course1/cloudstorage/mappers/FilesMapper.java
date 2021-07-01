@@ -17,11 +17,23 @@ public interface FilesMapper {
     @Select("SELECT * FROM FILES")
     List<File> getAllFiles();
 
-    @Select("SELECT * FROM FILES WHERE filename = #{filename}")
-    File getFile(String filename);
+    @Select("SELECT * FROM FILES WHERE userid = #{userid}")
+    List<File> getUsersFiles(String username);
 
-    @Delete("DELETE FROM FILES WHERE filename = #{filename}")
-    Integer delete(String filename);
+    @Select("SELECT * FROM FILES WHERE fileId = #{fileId}")
+    File getFile(Integer fileId);
+
+    @Select("SELECT * FROM FILES WHERE filename = #{filename}")
+    File getFileByName(String filename);
+
+    @Select("SELECT * FROM FILES WHERE filename = #{filename} AND userid = #{username}")
+    File getFileByNameAndUser(String filename, String username);
+
+
+    @Delete("DELETE FROM FILES WHERE fileid = #{fileid}")
+    Integer delete(Integer fileid);
+
+
 
 
 }
