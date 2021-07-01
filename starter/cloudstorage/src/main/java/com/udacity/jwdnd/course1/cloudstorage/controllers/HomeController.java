@@ -102,16 +102,9 @@ public class HomeController {
     public String postNote(@ModelAttribute("newNote") Note newNote, Model model, Authentication authentication){
 
 
-
-        if (editNote == null){
-           System.out.println(newNote.getNoteid() + " if is true");
            newNote.setUserid(Integer.valueOf(authentication.getName()));
            notesService.createNote(newNote);
-       } else {
-           System.out.println("Else is true");
-           editNote.setNotedescription(newNote.getNotedescription());
-           editNote.setNotetitle(newNote.getNotetitle());
-       }
+
 
        model.addAttribute("notes", this.notesService.getAllNotes(authentication));
 
