@@ -1,8 +1,11 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
 import com.udacity.jwdnd.course1.cloudstorage.data.File;
+import com.udacity.jwdnd.course1.cloudstorage.data.Note;
 import com.udacity.jwdnd.course1.cloudstorage.mappers.FilesMapper;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
+import com.udacity.jwdnd.course1.cloudstorage.services.NotesService;
+import org.springframework.boot.Banner;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +23,19 @@ public class HomeController {
 
     private final FileService fileService;
     private final FilesMapper filesMapper;
+    private final NotesService notesService;
 
-    public HomeController(FileService fileService, FilesMapper filesMapper) {
+    public HomeController(FileService fileService, FilesMapper filesMapper, NotesService notesService) {
         this.fileService = fileService;
         this.filesMapper = filesMapper;
+        this.notesService = notesService;
     }
 
     @GetMapping("/home")
     public String getHomepage(Model model, Authentication authentication){
 
         model.addAttribute("files", this.fileService.getUsersFiles(authentication.getName()));
+        model.addAttribute("notes", this.notesService.getAllNotes(authentication));
         model.addAttribute("fileSuccess", false);
         return "home";
     }
@@ -90,6 +96,35 @@ public class HomeController {
 
         return "home";
 
+    }
+
+    @PostMapping("/notes")
+    public String postNote(@ModelAttribute("newNote") Note newNote, Model model, Authentication authentication){
+
+
+
+        if (editNote == null){
+           System.out.println(newNote.getNoteid() + " if is true");
+           newNote.setUserid(Integer.valueOf(authentication.getName()));
+           notesService.createNote(newNote);
+       } else {
+           System.out.println("Else is true");
+           editNote.setNotedescription(newNote.getNotedescription());
+           editNote.setNotetitle(newNote.getNotetitle());
+       }
+
+       model.addAttribute("notes", this.notesService.getAllNotes(authentication));
+
+
+       return "home";
+    }
+
+    @GetMapping("/notes")
+    public String deleteNote(@RequestParam("noteId") Integer noteId, Model model, Authentication authentication) {
+
+       notesService.deleteFile(noteId);
+        model.addAttribute("notes", this.notesService.getAllNotes(authentication));
+       return "home";
     }
 
 }

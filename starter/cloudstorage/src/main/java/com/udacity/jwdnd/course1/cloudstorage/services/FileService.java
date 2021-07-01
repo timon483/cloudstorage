@@ -16,11 +16,9 @@ import java.util.List;
 public class FileService {
 
     private final FilesMapper filesMapper;
-    private final UserMapper userMapper;
 
-    public FileService (FilesMapper filesMapper, UserMapper userMapper){
+    public FileService (FilesMapper filesMapper){
         this.filesMapper = filesMapper;
-        this.userMapper = userMapper;
     }
 
     public List<File> getFiles(){
@@ -47,6 +45,7 @@ public class FileService {
 
 
     }
+
 
 
 
