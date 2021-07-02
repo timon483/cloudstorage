@@ -40,7 +40,6 @@
                                 </div>
                             </div>
                         </form>
-                        <h1 th:each ="file : ${files}" th:text="${file.filename}"></h1>
                         <div class="alert alert-danger" th:if="${fileSuccess}">
                             <span th:text="${fileError}">The file with this name already exists!</span>
                         </div>

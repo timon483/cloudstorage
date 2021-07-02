@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
 
@@ -70,7 +71,7 @@ public class HomeController {
 
 
     @PostMapping("/home")
-    public String uploadFile(@RequestParam("fileUpload")MultipartFile multipartFile, Model model, Authentication authentication) throws IOException {
+    public String uploadFile(@RequestParam("fileUpload")MultipartFile multipartFile, Model model, Authentication authentication, RedirectAttributes redirectAttributes) throws IOException {
 
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -110,52 +111,97 @@ public class HomeController {
     /*Methods for adding, editing and deleting notes*/
 
     @PostMapping("/notes")
-    public String postNote(@ModelAttribute("newNote") Note newNote, @RequestParam("noteid") Integer noteid, Model model, Authentication authentication){
+    public String postNote(@ModelAttribute("newNote") Note newNote, @RequestParam("noteid") Integer noteid, Model model, Authentication authentication, RedirectAttributes redirectAttributes){
 
 
         newNote.setUserid(Integer.valueOf(authentication.getName()));
-        notesService.createOrUpdateNote(newNote);
+        int row = notesService.createOrUpdateNote(newNote);
 
 
-       model.addAttribute("notes", this.notesService.getAllNotes(authentication));
+        model.addAttribute("notes", this.notesService.getAllNotes(authentication));
 
+        boolean changeSuccess = true;
 
-       return "home";
+        if (row > 0) {
+
+            redirectAttributes.addAttribute("changeSuccess", changeSuccess);
+        } else {
+
+            redirectAttributes.addAttribute("changeSuccess", !changeSuccess);
+            redirectAttributes.addAttribute("errorMessage", "There was a problem while adding a note");
+        }
+
+       return "redirect:/result";
     }
 
     @GetMapping("/notes")
-    public String deleteNote(@RequestParam("noteId") Integer noteId, Model model, Authentication authentication) {
+    public String deleteNote(@RequestParam("noteId") Integer noteId, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
 
-       notesService.deleteFile(noteId);
-        model.addAttribute("notes", this.notesService.getAllNotes(authentication));
-       return "home";
+
+        int row =  notesService.deleteFile(noteId);
+         model.addAttribute("notes", this.notesService.getAllNotes(authentication));
+        boolean changeSuccess = true;
+
+        if (row > 0) {
+
+            redirectAttributes.addAttribute("changeSuccess", changeSuccess);
+        } else {
+
+            redirectAttributes.addAttribute("changeSuccess", !changeSuccess);
+            redirectAttributes.addAttribute("errorMessage", "There was a problem while deleting a note");
+        }
+        return "redirect:/result";
+
     }
 
     @PostMapping("/credentials")
-    public String postCredential(@ModelAttribute("newCredential")Credential credential, @RequestParam("credentialid") Integer credentialid, Model model, Authentication authentication){
+    public String postCredential(@ModelAttribute("newCredential")Credential credential, @RequestParam("credentialid") Integer credentialid, Model model, Authentication authentication, RedirectAttributes redirectAttribute){
+
+            int row = 0;
 
             if (credential.getCredentialid() == null) {
-                credentialsService.createCredential(credential.getUrl(), credential.getUsername(), credential.getPassword(), Integer.valueOf(authentication.getName()));
+                row = credentialsService.createCredential(credential.getUrl(), credential.getUsername(), credential.getPassword(), Integer.valueOf(authentication.getName()));
                 model.addAttribute("credentials", this.credentialsService.getAllCredentials(authentication));
                 model.addAttribute("encryptionService", this.encryptionService);
             } else {
-                credentialsService.updateCredential(credential, credentialid, authentication);
+                 row = credentialsService.updateCredential(credential, credentialid, authentication);
                 model.addAttribute("credentials", this.credentialsService.getAllCredentials(authentication));
                 model.addAttribute("encryptionService", this.encryptionService);
             }
 
+            boolean changeSuccess = true;
+
+            if (row > 0) {
+
+                redirectAttribute.addAttribute("changeSuccess", changeSuccess);
+            } else {
+
+                redirectAttribute.addAttribute("changeSuccess", !changeSuccess);
+                redirectAttribute.addAttribute("errorMessage", "There was a problem while updating a note");
+            }
 
 
-    return "home";
+    return "redirect:/result";
     }
 
     @GetMapping("/credentials")
-    public String deleteCredential(@RequestParam("credentialId") Integer credentialid, Model model, Authentication authentication) {
+    public String deleteCredential(@RequestParam("credentialId") Integer credentialid, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
 
-        credentialsService.deleteCredential(credentialid);
+        int row = credentialsService.deleteCredential(credentialid);
         model.addAttribute("credentials", this.credentialsService.getAllCredentials(authentication));
         model.addAttribute("encryptionService", this.encryptionService);
-        return "home";
+        boolean changeSuccess = true;
+
+        if (row > 0) {
+
+            redirectAttributes.addAttribute("changeSuccess", changeSuccess);
+        } else {
+
+            redirectAttributes.addAttribute("changeSuccess", !changeSuccess);
+            redirectAttributes.addAttribute("errorMessage", "There was a problem while updating a note");
+        }
+
+        return "redirect:/result";
     }
 
 
