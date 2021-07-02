@@ -24,9 +24,15 @@ public class NotesService {
         return notesMapper.getNoteById(noteId);
     }
 
-    public int createNote(Note note) {
+    public int createOrUpdateNote(Note note) {
 
-        return notesMapper.insert(note);
+        if (note.getNoteid() == null) {
+
+            return notesMapper.insert(new Note(null, note.getNotetitle(), note.getNotedescription(), note.getUserid()));
+        } else {
+            return notesMapper.update(note);
+        }
+
     }
 
     public int deleteFile(Integer noteId){

@@ -99,11 +99,11 @@ public class HomeController {
     }
 
     @PostMapping("/notes")
-    public String postNote(@ModelAttribute("newNote") Note newNote, Model model, Authentication authentication){
+    public String postNote(@ModelAttribute("newNote") Note newNote, @RequestParam("noteid") Integer noteid, Model model, Authentication authentication){
 
 
-           newNote.setUserid(Integer.valueOf(authentication.getName()));
-           notesService.createNote(newNote);
+        newNote.setUserid(Integer.valueOf(authentication.getName()));
+        notesService.createOrUpdateNote(newNote);
 
 
        model.addAttribute("notes", this.notesService.getAllNotes(authentication));
