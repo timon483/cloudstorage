@@ -139,7 +139,7 @@ public class HomeController {
                 model.addAttribute("credentials", this.credentialsService.getAllCredentials(authentication));
                 model.addAttribute("encryptionService", this.encryptionService);
             } else {
-                credentialsService.updateCredential(credential);
+                credentialsService.updateCredential(credential, credentialid, authentication);
                 model.addAttribute("credentials", this.credentialsService.getAllCredentials(authentication));
                 model.addAttribute("encryptionService", this.encryptionService);
             }

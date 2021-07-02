@@ -43,7 +43,13 @@ public class CredentialsService {
         return credentialsMapper.delete(credentialid);
     }
 
-    public int updateCredential(Credential credential){
-        return credentialsMapper.update(credential);
+    public int updateCredential(Credential credential, Integer credentialid, Authentication authentication){
+
+        Credential tmp = credentialsMapper.getCredential(credentialid, Integer.valueOf(authentication.getName()));
+        String encryptedPassword = encryptionService.encryptValue(credential.getPassword(), tmp.getKey());
+        tmp.setPassword(encryptedPassword);
+        tmp.setUrl(credential.getUrl());
+        tmp.setUsername(credential.getUsername());
+        return credentialsMapper.update(tmp);
     }
 }
