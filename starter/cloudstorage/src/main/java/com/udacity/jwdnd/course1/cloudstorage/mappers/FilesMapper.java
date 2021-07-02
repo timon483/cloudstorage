@@ -18,7 +18,7 @@ public interface FilesMapper {
     List<File> getAllFiles();
 
     @Select("SELECT * FROM FILES WHERE userid = #{userid}")
-    List<File> getUsersFiles(String username);
+    List<File> getUsersFiles(Integer username);
 
     @Select("SELECT * FROM FILES WHERE fileId = #{fileId}")
     File getFile(Integer fileId);
@@ -26,8 +26,8 @@ public interface FilesMapper {
     @Select("SELECT * FROM FILES WHERE filename = #{filename}")
     File getFileByName(String filename);
 
-    @Select("SELECT * FROM FILES WHERE filename = #{filename} AND userid = #{username}")
-    File getFileByNameAndUser(String filename, String username);
+    @Select("SELECT * FROM FILES WHERE filename = #{filename} AND userid = #{userid}")
+    File getFileByNameAndUser(String filename, Integer userid);
 
 
     @Delete("DELETE FROM FILES WHERE fileid = #{fileid}")

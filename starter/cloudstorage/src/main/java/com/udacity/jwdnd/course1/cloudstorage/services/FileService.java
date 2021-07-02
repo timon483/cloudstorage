@@ -31,10 +31,10 @@ public class FileService {
         return filesMapper.getFile(fileId).getFiledata();
     }
 
-    public List<File> getUsersFiles(String username) { return this.filesMapper.getUsersFiles(username);}
+    public List<File> getUsersFiles(Integer userid) { return this.filesMapper.getUsersFiles(userid);}
 
-    public boolean isFilesNameAvailable(String filename, String username){
-        return filesMapper.getFileByNameAndUser(filename, username) == null;
+    public boolean isFilesNameAvailable(String filename, Integer userid){
+        return filesMapper.getFileByNameAndUser(filename, userid) == null;
     }
 
     public int createFile(MultipartFile file, Authentication authentication) throws IOException {

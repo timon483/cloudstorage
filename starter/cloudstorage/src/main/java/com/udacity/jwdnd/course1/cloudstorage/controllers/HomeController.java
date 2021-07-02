@@ -3,11 +3,9 @@ package com.udacity.jwdnd.course1.cloudstorage.controllers;
 import com.udacity.jwdnd.course1.cloudstorage.data.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.data.File;
 import com.udacity.jwdnd.course1.cloudstorage.data.Note;
+import com.udacity.jwdnd.course1.cloudstorage.data.User;
 import com.udacity.jwdnd.course1.cloudstorage.mappers.FilesMapper;
-import com.udacity.jwdnd.course1.cloudstorage.services.CredentialsService;
-import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
-import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
-import com.udacity.jwdnd.course1.cloudstorage.services.NotesService;
+import com.udacity.jwdnd.course1.cloudstorage.services.*;
 import org.springframework.boot.Banner;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,19 +28,24 @@ public class HomeController {
     private final NotesService notesService;
     private final CredentialsService credentialsService;
     private final EncryptionService encryptionService;
+    private final UserService userService;
 
-    public HomeController(FileService fileService, FilesMapper filesMapper, NotesService notesService, CredentialsService credentialsService, EncryptionService encryptionService) {
+    public HomeController(FileService fileService, FilesMapper filesMapper, NotesService notesService,
+                          CredentialsService credentialsService, EncryptionService encryptionService, UserService userService) {
         this.fileService = fileService;
         this.filesMapper = filesMapper;
         this.notesService = notesService;
         this.credentialsService = credentialsService;
         this.encryptionService = encryptionService;
+        this.userService = userService;
     }
 
     @GetMapping("/home")
     public String getHomepage(Model model, Authentication authentication){
 
-        model.addAttribute("files", this.fileService.getUsersFiles(authentication.getName()));
+
+        User user = userService.getUserByName(authentication.getName());
+        model.addAttribute("files", this.fileService.getUsersFiles(user.getUserid()));
         model.addAttribute("notes", this.notesService.getAllNotes(authentication));
         model.addAttribute("credentials", this.credentialsService.getAllCredentials(authentication));
         model.addAttribute("encryptionService", this.encryptionService);
@@ -55,7 +58,7 @@ public class HomeController {
    @GetMapping("/deletefile")
     public String deleteFile(@RequestParam Integer fileId, Authentication authentication, Model model)  {
         filesMapper.delete(fileId);
-        model.addAttribute("files", this.fileService.getUsersFiles(authentication.getName()));
+        model.addAttribute("files", this.fileService.getUsersFiles(Integer.valueOf(authentication.getName())));
         return "redirect:/home";
     }
 
@@ -73,6 +76,7 @@ public class HomeController {
     @PostMapping("/home")
     public String uploadFile(@RequestParam("fileUpload")MultipartFile multipartFile, Model model, Authentication authentication, RedirectAttributes redirectAttributes) throws IOException {
 
+       User user = userService.getUserByName(authentication.getName());
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
@@ -82,7 +86,7 @@ public class HomeController {
             uploadError = "Please choose the file";
         }
 
-        if (!fileService.isFilesNameAvailable(fileName, authentication.getName())) {
+        if (!fileService.isFilesNameAvailable(fileName, user.getUserid())) {
             uploadError = "There is a file with the same name";
         }
 
@@ -102,7 +106,7 @@ public class HomeController {
             model.addAttribute("fileSuccess", false);
         }
 
-        model.addAttribute("files", this.fileService.getUsersFiles(authentication.getName()));
+        model.addAttribute("files", this.fileService.getUsersFiles(Integer.valueOf(authentication.getName())));
 
         return "home";
 
