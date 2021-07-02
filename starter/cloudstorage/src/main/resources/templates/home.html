@@ -139,7 +139,7 @@
                         </button>
 
                         <div class="table-responsive">
-                            <table class="table table-striped" th:object="${credentials}" id="credentialTable">
+                            <table class="table table-striped"  id="credentialTable">
                                 <thead>
                                     <tr>
                                         <th style="width: 20%" scope="col"></th>
@@ -149,14 +149,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="cred: ${credentials}">
                                     <td>
-                                        <button type="button" class="btn btn-success">Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+                                        <button type="button" class="btn btn-success"
+                                                th:object = "${encryptionService}"
+                                                th:credid="${cred.credentialid}"
+                                                th:credentialurl="${cred.url}"
+                                                th:credusername="${cred.username}"
+                                                th:credpassword="${encryptionService.decryptValue(cred.getPassword(), cred.getKey())}"
+                                                onclick="showCredentialModal(this.getAttribute('credid'),this.getAttribute('credentialurl'),
+                                                 this.getAttribute('credusername'),
+                                                this.getAttribute('credpassword'))"
+                                                th:href="@{/credentials/(credentialid = ${cred.credentialid})}"
+                                        >Edit</button>
+                                        <a class="btn btn-danger" th:href="@{/credentials/(credentialId = ${cred.credentialid})}">Delete</a>
                                     </td>
-                                    <th scope="row">Example Credential URL</th>
-                                    <td>Example Credential Username</td>
-                                    <td>Example Credential Password</td>
+                                    <th scope="row" th:text="${cred.url}">Example Credential URL</th>
+                                    <td th:text="${cred.username}">Example Credential Username</td>
+                                    <td th:text="${cred.password}">Example Credential Password</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -172,8 +182,8 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
-                                            <input type="hidden" name="credentialId" id="credential-id">
+                                        <form action="#" th:action="@{/credentials}"  th:object="${newCredential}" method="POST">
+                                            <input type="hidden" name="credentialid" id="credential-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">URL</label>
                                                 <input type="text" name= "url" class="form-control" id="credential-url" maxlength="100" required>
