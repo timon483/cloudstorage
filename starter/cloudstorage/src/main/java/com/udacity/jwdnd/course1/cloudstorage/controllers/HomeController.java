@@ -117,8 +117,9 @@ public class HomeController {
     @PostMapping("/notes")
     public String postNote(@ModelAttribute("newNote") Note newNote, @RequestParam("noteid") Integer noteid, Model model, Authentication authentication, RedirectAttributes redirectAttributes){
 
+        User user = userService.getUserByName(authentication.getName());
 
-        newNote.setUserid(Integer.valueOf(authentication.getName()));
+        newNote.setUserid(user.getUserid());
         int row = notesService.createOrUpdateNote(newNote);
 
 
