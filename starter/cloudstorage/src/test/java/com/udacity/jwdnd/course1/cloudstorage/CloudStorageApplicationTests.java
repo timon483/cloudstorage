@@ -107,4 +107,30 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals("test", homePage.getNoteTitle());
 
 	}
+
+	@Test
+	public void noteIsEdited() throws InterruptedException {
+		driver.get("http://localhost:" + this.port + "/signup");
+		SignupPage signupPage = new SignupPage(driver);
+		signupPage.singUp("firstname", "lastname", "username", "password");
+		driver.get("http://localhost:" + this.port + "/login");
+		LoginPage loginPage = new LoginPage(driver);
+		loginPage.login("username", "password");
+		driver.get("http://localhost:" + this.port + "/home");
+		HomePage homePage = new HomePage(driver);
+		homePage.addNewNote("test", "test");
+		driver.get("http://localhost:" + this.port + "/home");
+		Assertions.assertEquals("test", homePage.getNoteDescription());
+
+		homePage.clickEditNoteBtn("1", homePage.getNoteTitle(), homePage.getNoteDescription());
+
+		homePage.addTextToNewNote(homePage.getNoteTitle(), "Changed description");
+		driver.get("http://localhost:" + this.port + "/home");
+
+		Assertions.assertEquals("Changed description", homePage.getNoteDescription());
+		System.out.println(homePage.getNoteDescription());
+
+
+
+	}
 }

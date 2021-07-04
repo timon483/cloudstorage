@@ -33,6 +33,12 @@ public class HomePage {
     @FindBy(xpath = "//*[@id='addedNoteTitle']")
     WebElement addedNoteTitle;
 
+    @FindBy(xpath = "//*[@id='addedNoteDescription']")
+    WebElement addedNoteDescription;
+
+    @FindBy(xpath = "//*[@id='editNoteButton']")
+    WebElement editNoteButton;
+
     private final WebDriver driver;
 
     public HomePage(WebDriver driver){
@@ -69,5 +75,13 @@ public class HomePage {
         return this.addedNoteTitle.getAttribute("innerHTML");
     }
 
+    public String getNoteDescription() {return this.addedNoteDescription.getAttribute("innerHTML") ;}
+
+    public void clickEditNoteBtn(String id, String title, String description) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + id + "';", this.editNoteButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + title + "';", this.editNoteButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + description + "';", this.editNoteButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", this.editNoteButton);
+    }
 
 }
