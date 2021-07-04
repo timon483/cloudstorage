@@ -164,8 +164,11 @@ public class HomeController {
 
             int row = 0;
 
-            if (credential.getCredentialid() == null) {
-                row = credentialsService.createCredential(credential.getUrl(), credential.getUsername(), credential.getPassword(), Integer.valueOf(authentication.getName()));
+            User user = userService.getUserByName(authentication.getName());
+
+
+        if (credential.getCredentialid() == null) {
+                row = credentialsService.createCredential(credential.getUrl(), credential.getUsername(), credential.getPassword(), user.getUserid());
                 model.addAttribute("credentials", this.credentialsService.getAllCredentials(authentication));
                 model.addAttribute("encryptionService", this.encryptionService);
             } else {

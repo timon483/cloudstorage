@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
 import org.apache.ibatis.annotations.Delete;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -39,6 +40,30 @@ public class HomePage {
     @FindBy(xpath = "//*[@id='editNoteButton']")
     WebElement editNoteButton;
 
+    @FindBy(id = "nav-credentials-tab")
+    WebElement credentialsTab;
+
+    @FindBy(id = "credential-url")
+    WebElement credentialURL;
+
+    @FindBy(id = "credential-username")
+    WebElement credentialUsername;
+
+    @FindBy(id = "credential-password")
+    WebElement credentialPassword;
+
+    @FindBy(id = "saveCredential")
+    WebElement saveCredentialButton;
+
+    @FindBy(id = "addCredentialButton")
+    WebElement addCredentialButton;
+
+
+
+
+
+
+
     private final WebDriver driver;
 
     public HomePage(WebDriver driver){
@@ -61,10 +86,6 @@ public class HomePage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", this.addNewNoteButton);
     }
 
-    public void clickSaveNoteButton() {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", this.saveNotesButton);
-    }
-
     public void addTextToNewNote(String title, String description) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + title + "';", this.noteTitle);
         ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + description + "';", this.noteDescription);
@@ -82,6 +103,36 @@ public class HomePage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + title + "';", this.editNoteButton);
         ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + description + "';", this.editNoteButton);
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", this.editNoteButton);
+    }
+
+
+    public void clickCredentialsTab() {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", this.credentialsTab);
+
+    }
+
+    public void addNewCredential(String url, String username, String password){
+
+        this.clickCredentialsTab();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", this.addCredentialButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + url + "';", this.credentialURL);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + username + "';", this.credentialUsername);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + password + "';", this.credentialPassword);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", this.saveCredentialButton);
+
+    }
+
+    public void clieckEditCredentialButton(String id, String url, String username, String password) {
+        WebElement editNoteButton = driver.findElement(By.id("editCredButton" + id));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + id + "';", editNoteButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + url + "';", editNoteButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + username + "';", editNoteButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + password + "';", editNoteButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", editNoteButton);
+    }
+
+    String getPasswordFromEditing(){
+        return driver.findElement(By.id("credential-password")).getAttribute("value");
     }
 
 }

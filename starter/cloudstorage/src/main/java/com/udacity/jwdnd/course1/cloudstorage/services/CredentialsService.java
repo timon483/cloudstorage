@@ -50,7 +50,8 @@ public class CredentialsService {
 
     public int updateCredential(Credential credential, Integer credentialid, Authentication authentication){
 
-        Credential tmp = credentialsMapper.getCredential(credentialid, Integer.valueOf(authentication.getName()));
+        User user = userService.getUserByName(authentication.getName());
+        Credential tmp = credentialsMapper.getCredential(credentialid, user.getUserid());
         String encryptedPassword = encryptionService.encryptValue(credential.getPassword(), tmp.getKey());
         tmp.setPassword(encryptedPassword);
         tmp.setUrl(credential.getUrl());
