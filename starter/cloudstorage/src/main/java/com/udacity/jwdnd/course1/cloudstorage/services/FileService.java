@@ -16,9 +16,11 @@ import java.util.List;
 public class FileService {
 
     private final FilesMapper filesMapper;
+    private final UserService userService;
 
-    public FileService (FilesMapper filesMapper){
+    public FileService (FilesMapper filesMapper, UserService userService){
         this.filesMapper = filesMapper;
+        this.userService = userService;
     }
 
     public List<File> getFiles(){
@@ -40,8 +42,9 @@ public class FileService {
     public int createFile(MultipartFile file, Authentication authentication) throws IOException {
 
         System.out.println("File created");
+        User user = userService.getUserByName(authentication.getName());
 
-        return filesMapper.insert(new File(null, file.getOriginalFilename(), file.getContentType(), String.valueOf(file.getSize()), authentication.getName(), file.getBytes()));
+        return filesMapper.insert(new File(null, file.getOriginalFilename(), file.getContentType(), String.valueOf(file.getSize()), user.getUserid(), file.getBytes()));
 
 
     }

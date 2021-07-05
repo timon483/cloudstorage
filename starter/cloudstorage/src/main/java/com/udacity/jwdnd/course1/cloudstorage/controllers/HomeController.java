@@ -50,6 +50,7 @@ public class HomeController {
         model.addAttribute("credentials", this.credentialsService.getAllCredentials(authentication));
         model.addAttribute("encryptionService", this.encryptionService);
         model.addAttribute("fileSuccess", false);
+        model.addAttribute("fileError", false);
         return "home";
     }
 
@@ -58,8 +59,12 @@ public class HomeController {
    @GetMapping("/deletefile")
     public String deleteFile(@RequestParam Integer fileId, Authentication authentication, Model model)  {
         filesMapper.delete(fileId);
-        model.addAttribute("files", this.fileService.getUsersFiles(Integer.valueOf(authentication.getName())));
-        return "redirect:/home";
+        User user = userService.getUserByName(authentication.getName());
+        model.addAttribute("fileSuccess", true);
+        model.addAttribute("fileSuccessMessage", "The file was successfully deleted");
+        model.addAttribute("files", this.fileService.getUsersFiles(user.getUserid()));
+
+        return "home";
     }
 
     @GetMapping("/fileview")
@@ -99,14 +104,15 @@ public class HomeController {
 
         if (uploadError != null) {
 
-            model.addAttribute("fileSuccess", true);
-            model.addAttribute("fileError", uploadError);
+            model.addAttribute("fileError", false);
+            model.addAttribute("fileErrorMessage", uploadError);
         } else {
 
-            model.addAttribute("fileSuccess", false);
+            model.addAttribute("fileSuccess", true);
+            model.addAttribute("fileSuccessMessage", "The file was successfully downloaded");
         }
 
-        model.addAttribute("files", this.fileService.getUsersFiles(Integer.valueOf(authentication.getName())));
+        model.addAttribute("files", this.fileService.getUsersFiles(user.getUserid()));
 
         return "home";
 

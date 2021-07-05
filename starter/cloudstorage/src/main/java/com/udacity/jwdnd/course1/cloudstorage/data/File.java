@@ -6,10 +6,10 @@ public class File {
     private String filename;
     private String contenttype;
     private String filesize;
-    private String userid;
+    private Integer userid;
     private byte[] filedata;
 
-    public File(Integer fileId, String filename, String contenttype, String filesize, String userid, byte[] filedata) {
+    public File(Integer fileId, String filename, String contenttype, String filesize, Integer userid, byte[] filedata) {
         this.fileId = fileId;
         this.filename = filename;
         this.contenttype = contenttype;
@@ -50,11 +50,11 @@ public class File {
         this.filesize = filesize;
     }
 
-    public String getUserid() {
+    public Integer getUserid() {
         return userid;
     }
 
-    public void setUserid(String userid) {
+    public void setUserid(Integer userid) {
         this.userid = userid;
     }
 

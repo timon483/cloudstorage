@@ -40,8 +40,11 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="alert alert-danger" th:if="${fileSuccess}">
-                            <span th:text="${fileError}">The file with this name already exists!</span>
+                        <div class="alert alert-danger" th:if="${fileError}">
+                            <span th:text="${fileErrorMessage}">The file with this name already exists!</span>
+                        </div>
+                        <div class="alert alert-success fill-parent" th:if="${fileSuccess}">
+                            <span th:text="${fileSuccessMessage}">The file with this name already exists!</span>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped" id="fileTable">
